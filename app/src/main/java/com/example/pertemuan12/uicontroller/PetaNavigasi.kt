@@ -6,10 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pertemuan12.view.EntrySiswaScreen
+import com.example.pertemuan12.view.HomeScreen
 import pertemuan12.uicontroller.route.DestinasiEntry
 import pertemuan12.uicontroller.route.DestinasiHome
-import pertemuan12.view.EntrySiswaScreen
-import pertemuan12.view.HomeScreen
 
 @Composable
 fun DataSiswaApp(navController: NavHostController = rememberNavController(),

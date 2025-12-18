@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.pertemuan12"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.pertemuan12"

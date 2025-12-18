@@ -1,7 +1,7 @@
-package pertemuan12.repositori
+package com.example.pertemuan12.repositori
 
 import android.app.Application
-import com.example.mydatasisw.apiservice.ServiceApiSiswa
+import com.example.pertemuan12.apiservice.ServiceApiSiswa
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,8 +13,8 @@ interface ContainerApp {
     val repositoryDataSiswa : RepositoryDataSiswa
 }
 
-class DefaultContainerApp : ContainerApp{
-    private val baseurl = "http://10.0.2.2:/umyTI/" // laragon
+class DefaultContainerApp : ContainerApp {
+    private val baseurl = "http://10.0.2.2:80/tiUMY/"
 
     val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -40,7 +40,8 @@ class DefaultContainerApp : ContainerApp{
     }
 
     override val repositoryDataSiswa: RepositoryDataSiswa by lazy {
-        JaringanRepositoryDataSiswa(retrofitService) }
+        JaringanRepositoryDataSiswa(retrofitService)
+    }
 }
 
 class AplikasiDataSiswa : Application() {

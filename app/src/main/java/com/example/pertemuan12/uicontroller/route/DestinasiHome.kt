@@ -1,6 +1,7 @@
 package pertemuan12.uicontroller.route
 
-import com.example.mydatasisw.R
+import com.example.pertemuan12.R
+
 
 object DestinasiHome : DestinasiNavigasi {
     override val route = "home"

@@ -1,4 +1,4 @@
-package pertemuan12.view
+package com.example.pertemuan12.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,16 +19,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mydatasisw.R
-import pertemuan12.uicontroller.CostumeTopAppBar
-import pertemuan12.uicontroller.route.DestinasiEntry
-import pertemuan12.viewmodel.EntryViewModel
-import pertemuan12.viewmodel.InsertUiState
-import pertemuan12.viewmodel.PenyediaViewModel
+import com.example.pertemuan12.R
+import com.example.pertemuan12.modeldata.DetailSiswa
+import com.example.pertemuan12.modeldata.UIStateSiswa
+import com.example.pertemuan12.viewmodel.EntryViewModel
+import com.example.pertemuan12.viewmodel.provider.PenyediaViewModel
 import kotlinx.coroutines.launch
+import pertemuan12.uicontroller.route.DestinasiEntry
+import pertemuan12.view.SiswaTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,27 +38,26 @@ fun EntrySiswaScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EntryViewModel = viewModel(factory = PenyediaViewModel.Factory)
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-    Scaffold(
+    Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CostumeTopAppBar(
-                title = DestinasiEntry.titleRes,
+            SiswaTopAppBar(
+                title = stringResource(DestinasiEntry.titleRes),
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                scrollBehavior = scrollBehavior
             )
-        }
-    ) { innerPadding ->
+        } ) { innerPadding ->
+
         EntrySiswaBody(
-            insertUiState = viewModel.uiState,
-            onSiswaValueChange = viewModel::updateInsertMhsState,
+            uiStateSiswa = viewModel.uiStateSiswa,
+            onSiswaValueChange = viewModel::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.insertMhs()
+                    viewModel.addSiswa()
                     navigateBack()
                 }
             },
@@ -70,87 +71,77 @@ fun EntrySiswaScreen(
 
 @Composable
 fun EntrySiswaBody(
-    insertUiState: InsertUiState,
-    onSiswaValueChange: (InsertUiState) -> Unit,
+    uiStateSiswa: UIStateSiswa,
+    onSiswaValueChange: (DetailSiswa) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(18.dp),
-        modifier = modifier.padding(12.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large)),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
     ) {
-        FormInputSiswa(
-            insertUiState = insertUiState,
+        FormTambahSiswa(
+            detailSiswa = uiStateSiswa.detailSiswa,
             onValueChange = onSiswaValueChange,
             modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = onSaveClick,
+            enabled = uiStateSiswa.isEntryValid,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Simpan")
+            Text(stringResource(R.string.btn_submit))
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormInputSiswa(
-    insertUiState: InsertUiState,
+fun FormTambahSiswa(
+    detailSiswa: DetailSiswa,
     modifier: Modifier = Modifier,
-    onValueChange: (InsertUiState) -> Unit = {},
+    onValueChange: (DetailSiswa) -> Unit = {},
     enabled: Boolean = true
 ){
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+    ){
         OutlinedTextField(
-            value = insertUiState.insertUiEvent.nama,
-            onValueChange = { onValueChange(insertUiState.copy(insertUiEvent = insertUiState.insertUiEvent.copy(nama = it))) },
-            label = { Text("Nama") },
+            value = detailSiswa.nama,
+            onValueChange = {onValueChange(detailSiswa.copy(nama = it)) },
+            label = { Text(stringResource(R.string.nama)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
         )
         OutlinedTextField(
-            value = insertUiState.insertUiEvent.nis,
-            onValueChange = { onValueChange(insertUiState.copy(insertUiEvent = insertUiState.insertUiEvent.copy(nis = it))) },
-            label = { Text("NIS") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        OutlinedTextField(
-            value = insertUiState.insertUiEvent.alamat,
-            onValueChange = { onValueChange(insertUiState.copy(insertUiEvent = insertUiState.insertUiEvent.copy(alamat = it))) },
-            label = { Text("Alamat") },
+            value = detailSiswa.alamat,
+            onValueChange = {onValueChange(detailSiswa.copy(alamat = it))},
+            label = { Text(stringResource(R.string.alamat)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
         )
         OutlinedTextField(
-            value = insertUiState.insertUiEvent.telpon,
-            onValueChange = { onValueChange(insertUiState.copy(insertUiEvent = insertUiState.insertUiEvent.copy(telpon = it))) },
-            label = { Text("No Telepon") },
+            value = detailSiswa.telpon,
+            onValueChange = {onValueChange(detailSiswa.copy(telpon = it))},
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            label = { Text(text = stringResource(R.string.telpon)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            singleLine = true
         )
 
         if (enabled) {
             Text(
-                text = "Isi Semua Data!",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
+                text = stringResource(R.string.required_field),
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
             )
         }
         Divider(
-            thickness = 8.dp,
-            modifier = Modifier.padding(12.dp)
+            thickness = dimensionResource(R.dimen.padding_small),
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
         )
     }
 }

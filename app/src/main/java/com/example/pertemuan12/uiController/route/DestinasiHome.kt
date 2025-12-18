@@ -1,4 +1,8 @@
-package com.example.pertemuan12.uiController.route
+package pertemuan12.uicontroller.route
 
-object DestinasiHome {
+import com.example.mydatasisw.R
+
+object DestinasiHome : DestinasiNavigasi {
+    override val route = "home"
+    override val titleRes = R.string.app_name
 }

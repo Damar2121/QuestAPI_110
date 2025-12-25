@@ -36,11 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.R
 import com.example.pertemuan12.modeldata.DataSiswa
+import com.example.pertemuan12.uicontroller.route.DestinasiHome
 import com.example.pertemuan12.viewmodel.HomeViewModel
 import com.example.pertemuan12.viewmodel.StatusUiSiswa
 import com.example.pertemuan12.viewmodel.provider.PenyediaViewModel
-import pertemuan12.uicontroller.route.DestinasiHome
-import pertemuan12.view.SiswaTopAppBar
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -87,6 +88,31 @@ fun HomeScreen(
 }
 
 @Composable
+fun HomeBody(
+    statusUiSiswa: StatusUiSiswa,
+    //edit 2.3 tambahkan parameter onSiswaClick
+    onSiswaClick: (Int) -> Unit,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ){
+        when(statusUiSiswa){
+            is StatusUiSiswa.Loading -> LoadingScreen()
+            //edit 2.5 : tambahkan event onSiswaClick
+            is StatusUiSiswa.Success -> DaftarSiswa(itemSiswa = statusUiSiswa.siswa,
+                onSiswaClick = { onSiswaClick(it.id) } )
+            is StatusUiSiswa.Error -> ErrorScreen(
+                retryAction,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+    }
+}
+
+@Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
         modifier = modifier.size(200.dp),
@@ -110,38 +136,11 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HomeBody(
-    statusUiSiswa: StatusUiSiswa,
-    //edit 2.3 tambahkan parameter onSiswaClick
-    onSiswaClick: (Int) -> Unit,
-    retryAction: () -> Unit,
-    modifier: Modifier = Modifier
-){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ){
-        when(statusUiSiswa){
-            is StatusUiSiswa.Loading -> LoadingScreen()
-            //edit 2.5 : tambahkan event onSiswaClick
-            is StatusUiSiswa.Success -> DaftarSiswa(itemSiswa = statusUiSiswa.siswa,
-                onSiswaClick = {onSiswaClick(it.id)} )
-            is StatusUiSiswa.Error -> ErrorScreen(
-                retryAction,
-                modifier = modifier.fillMaxSize()
-            )
-        }
-    }
-}
-
-
-
-@Composable
 fun DaftarSiswa(
-    itemSiswa: List<DataSiswa>,
+    itemSiswa : List<DataSiswa>,
     //edit 2.1 : tambahkab parameter onSiswaClick
     onSiswaClick: (DataSiswa) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier=Modifier
 ){
     LazyColumn(modifier = Modifier){
         items(items = itemSiswa, key = {it.id}){
@@ -168,14 +167,15 @@ fun ItemSiswa(
     ) {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(
+                id = R.dimen.padding_small))
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = siswa.nama,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(

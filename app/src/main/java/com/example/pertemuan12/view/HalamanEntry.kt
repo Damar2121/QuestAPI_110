@@ -26,11 +26,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.R
 import com.example.pertemuan12.modeldata.DetailSiswa
 import com.example.pertemuan12.modeldata.UIStateSiswa
+import com.example.pertemuan12.uicontroller.route.DestinasiEntry
 import com.example.pertemuan12.viewmodel.EntryViewModel
 import com.example.pertemuan12.viewmodel.provider.PenyediaViewModel
 import kotlinx.coroutines.launch
-import pertemuan12.uicontroller.route.DestinasiEntry
-import pertemuan12.view.SiswaTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.example.pertemuan12.ui.theme.Pertemuan12Theme
-import pertemuan12.uicontroller.DataSiswaApp
+import com.example.pertemuan12.uicontroller.DataSiswaApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
